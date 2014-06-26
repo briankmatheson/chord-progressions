@@ -11,16 +11,16 @@ def build_progression (number_of_bars, starting_chord)
 	chord_indexes = build_chord_indexes(starting_chord_index)
 
 	progression.push chords[chord_indexes[0]]
-	chord_indexes_used.push 0
+	chord_indexes_used.push chord_indexes[0]
 
 	number_of_bars.times do 
 
-		last_chord_index = chord_indexes_used.size - 1
+		last_used_chord_index = chord_indexes_used.size - 1
 		next_chord_index = get_next_chord_index(include_second_and_sixth_chords,
 												chord_indexes)
-		if last_chord_index > 1
+		if last_used_chord_index >= 1
 			while chords_are_repeated_too_much(next_chord_index, 
-											   last_chord_index,
+											   last_used_chord_index,
 											   chord_indexes_used)
 				next_chord_index = get_next_chord_index(include_second_and_sixth_chords,
 														chord_indexes)
@@ -39,12 +39,12 @@ def build_progression (number_of_bars, starting_chord)
 	return progression
 end
 
-def chords_are_repeated_too_much(next_chord_index, last_chord_index, chord_indexes_used)
-	if next_chord_index == chord_indexes_used[last_chord_index]
+def chords_are_repeated_too_much(next_chord_index, last_used_chord_index, chord_indexes_used)
+	if next_chord_index == chord_indexes_used[last_used_chord_index]
 		if chord_indexes_used.size < 1
 			return false 
 		else
-			if next_chord_index == chord_indexes_used[last_chord_index - 1]
+			if next_chord_index == chord_indexes_used[last_used_chord_index - 1]
 				return true
 			end
 		end
@@ -59,7 +59,7 @@ def get_next_chord_index(include_second_and_sixth_chords, chord_indexes)
 		max_chords_to_use = 3
 	end
 
-	random_number = rand * max_chords_to_use
+	random_number = rand(max_chords_to_use)
 	next_chord_number = random_number.to_i
 	next_chord_index = chord_indexes[next_chord_number]
 
@@ -67,7 +67,7 @@ def get_next_chord_index(include_second_and_sixth_chords, chord_indexes)
 end
 
 def get_first_chord_index
-	random_number = rand * 7
+	random_number = rand(7)
 	return random_number.to_i
 end
 
